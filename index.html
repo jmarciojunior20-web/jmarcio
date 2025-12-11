@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Empresas de Investimento</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: #1f2937;
+      --input: #0b1020;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(120deg, #0b1020, #0f172a 60%, #111827);
+      color: var(--text);
+    }
+    header {
+      padding: 32px 20px; text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 24px; }
+    header p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .container {
+      max-width: 1100px; margin: 0 auto; padding: 20px;
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;
+    }
+    .card {
+      background: linear-gradient(180deg, #0c1326 0%, #101728 100%);
+      border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .card h2 {
+      margin: 0 0 12px; font-size: 18px;
+    }
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .grid-1 { grid-template-columns: 1fr; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--input); color: var(--text);
+      outline: none;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    .row { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: #142036; color: var(--text); cursor: pointer; transition: 0.15s;
+      font-weight: 600;
+    }
+    .btn:hover { filter: brightness(1.1); }
+    .btn-primary { background: var(--accent); color: #082012; border-color: #16a34a; }
+    .btn-danger { background: var(--danger); color: #330c0c; border-color: #b91c1c; }
+    .btn-secondary { background: #25314b; }
+    .status { font-size: 12px; color: var(--muted); padding-left: 6px; }
+
+    .toolbar { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+    .table {
+      width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .table th, .table td {
+      border-bottom: 1px solid var(--border); padding: 10px; text-align: left; font-size: 13px;
+    }
+    .table th { background: #0d1427; color: var(--muted); position: sticky; top: 0; }
+    .table tr:hover td { background: #0e1833; }
+
+    .pill {
+      display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px;
+      border: 1px solid var(--border); background: #0b1224; color: #a5b4fc;
+    }
+
+    @media (max-width: 980px) {
+      .container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cadastro de Empresas de Investimento</h1>
+    <p>Cadastre, busque, edite e exclua empresas. Dados ficam salvos no seu navegador.</p>
+  </header>
+
+  <div class="container">
+    <!-- Formulário -->
+    <section class="card">
+      <h2>Formulário de cadastro</h2>
+      <form id="empresaForm">
+        <div class="grid">
+          <div>
+            <label for="nome">Nome da empresa</label>
+            <input id="nome" type="text" placeholder="Ex.: Atlas Capital Partners" required />
+          </div>
+          <div>
+            <label for="cnpj">CNPJ</label>
+            <input id="cnpj" type="text" placeholder="00.000.000/0001-00" required />
+          </div>
+          <div>
+            <label for="area">Área de atuação</label>
+            <input id="area" type="text" placeholder="Tecnologia, Saúde, Energia..." />
+          </div>
+          <div>
+            <label for="tipo">Tipo de investimento</label>
+            <select id="tipo">
+              <option value="">Selecione...</option>
+              <option>Venture Capital</option>
+              <option>Private Equity</option>
+              <option>Imobiliário</option>
+              <option>Infraestrutura</option>
+              <option>Multi-estratégia</option>
+            </select>
+          </div>
+          <div>
+            <label for="valor">Valor médio investido (R$)</label>
+            <input id="valor" type="number" min="0" step="1000" placeholder="Ex.: 5000000" />
+          </div>
+          <div>
+            <label for="contato">Contato (e-mail ou telefone)</label>
+            <input id="contato" type="text" placeholder="contato@empresa.com / (85) 99999-9999" />
+          </div>
+        </div>
+        <div class="grid grid-1" style="margin-top: 12px;">
+          <div>
+            <label for="endereco">Endereço</label>
+            <textarea id="endereco" placeholder="Rua, número, bairro, cidade/UF"></textarea>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 12px;">
+          <button type="submit" class="btn btn-primary" id="btnSalvar">Salvar</button>
+          <button type="button" class="btn btn-secondary" id="btnReset">Limpar</button>
+          <span class="status" id="statusMsg"></span>
+        </div>
+        <input type="hidden" id="editingIndex" value="" />
+      </form>
+    </section>
+
+    <!-- Lista e busca -->
+    <section class="card">
+      <h2>Empresas cadastradas</h2>
+      <div class="toolbar">
+        <input id="busca" type="text" placeholder="Buscar por nome, CNPJ, área ou tipo..." style="flex:1" />
+        <button class="btn" id="btnExport">Exportar JSON</button>
+        <button class="btn" id="btnImport">Importar JSON</button>
+        <input type="file" id="fileImport" accept="application/json" style="display:none" />
+      </div>
+
+      <div style="overflow:auto; max-height: 420px; border-radius:10px;">
+        <table class="table" id="tabela">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CNPJ</th>
+              <th>Área</th>
+              <th>Tipo</th>
+              <th>Valor médio (R$)</th>
+              <th>Contato</th>
+              <th>Endereço</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- Linhas geradas via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Utilidades de armazenamento
+    const STORAGE_KEY = 'empresas-investimento';
+    const getData = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const setData = (arr) => localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+
+    // Dados iniciais (5 empresas de exemplo)
+    const exemplos = [
+      {
+        nome: "Atlas Capital Partners",
+        cnpj: "12.345.678/0001-90",
+        area: "Tecnologia",
+        tipo: "Venture Capital",
+        valor: 8000000,
+        contato: "contato@atlascap.com",
+        endereco: "Av. Paulista, 1000 - São Paulo/SP"
+      },
+      {
+        nome: "Nordeste Growth Fund",
+        cnpj: "23.456.789/0001-15",
+        area: "Saúde",
+        tipo: "Private Equity",
+        valor: 15000000,
+        contato: "(85) 3333-1010",
+        endereco: "Rua das Flores, 250 - Fortaleza/CE"
+      },
+      {
+        nome: "Verde Infra Invest",
+        cnpj: "34.567.890/0001-22",
+        area: "Energia e Infraestrutura",
+        tipo: "Infraestrutura",
+        valor: 25000000,
+        contato: "relacionamento@verdefundos.com",
+        endereco: "Av. Beira Mar, 1200 - Fortaleza/CE"
+      },
+      {
+        nome: "Litoral Real Estate",
+        cnpj: "45.678.901/0001-08",
+        area: "Imobiliário",
+        tipo: "Imobiliário",
+        valor: 6000000,
+        contato: "(11) 4002-8922",
+        endereco: "Rua Augusta, 500 - São Paulo/SP"
+      },
+      {
+        nome: "Orion Multi Strategy",
+        cnpj: "56.789.012/0001-55",
+        area: "Multi-setor",
+        tipo: "Multi-estratégia",
+        valor: 12000000,
+        contato: "orion@multistrat.com",
+        endereco: "Praia de Iracema, 50 - Fortaleza/CE"
+      }
+    ];
+
+    // Inicialização: carregar exemplos se vazio
+    (function init() {
+      const current = getData();
+      if (current.length === 0) {
+        setData(exemplos);
+      }
+      renderTable();
+    })();
+
+    // Elementos
+    const form = document.getElementById('empresaForm');
+    const inputs = {
+      nome: document.getElementById('nome'),
+      cnpj: document.getElementById('cnpj'),
+      area: document.getElementById('area'),
+      tipo: document.getElementById('tipo'),
+      valor: document.getElementById('valor'),
+      contato: document.getElementById('contato'),
+      endereco: document.getElementById('endereco'),
+      editingIndex: document.getElementById('editingIndex'),
+      statusMsg: document.getElementById('statusMsg'),
+      busca: document.getElementById('busca'),
+      tbody: document.getElementById('tbody'),
+      btnReset: document.getElementById('btnReset'),
+      btnExport: document.getElementById('btnExport'),
+      btnImport: document.getElementById('btnImport'),
+      fileImport: document.getElementById('fileImport')
+    };
+
+    // Máscara simples de CNPJ (não valida, apenas formata)
+    function formatCNPJ(value) {
+      let v = value.replace(/\D/g, '').slice(0, 14);
+      v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      v = v.replace(/(\d{4})(\d)/, '$1-$2');
+      return v;
+    }
+    inputs.cnpj.addEventListener('input', () => {
+      inputs.cnpj.value = formatCNPJ(inputs.cnpj.value);
+    });
+
+    // Validações básicas
+    function validateForm(data) {
+      if (!data.nome.trim()) return "Informe o nome da empresa.";
+      if (!data.cnpj.trim()) return "Informe o CNPJ.";
+      // Evitar CNPJ duplicado (exceto em edição do mesmo registro)
+      const list = getData();
+      const idxEdit = inputs.editingIndex.value !== '' ? Number(inputs.editingIndex.value) : null;
+      const dup = list.findIndex((e, i) => e.cnpj === data.cnpj && i !== idxEdit);
+      if (dup !== -1) return "Já existe empresa cadastrada com este CNPJ.";
+      return null;
+    }
+
+    // Renderização da tabela
+    function renderTable(filter = '') {
+      const list = getData();
+      const q = filter.trim().toLowerCase();
+      const filtered = q
+        ? list.filter(e =>
+            (e.nome || '').toLowerCase().includes(q) ||
+            (e.cnpj || '').toLowerCase().includes(q) ||
+            (e.area || '').toLowerCase().includes(q) ||
+            (e.tipo || '').toLowerCase().includes(q)
+          )
+        : list;
+
+      inputs.tbody.innerHTML = '';
+      filtered.forEach((e, i) => {
+        const tr = document.createElement('tr');
+
+        const tdNome = <td><span class="pill">${e.tipo || '—'}</span><br>${e.nome || '—'}</td>;
+        const tdCNPJ = <td>${e.cnpj || '—'}</td>;
+        const tdArea = <td>${e.area || '—'}</td>;
+        const tdTipo = <td>${e.tipo || '—'}</td>;
+        const tdValor = <td>${Number(e.valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>;
+        const tdContato = <td>${e.contato || '—'}</td>;
+        const tdEndereco = <td>${e.endereco || '—'}</td>;
+        const tdAcoes = `
+          <td>
+            <button class="btn" data-action="edit" data-index="${i}">Editar</button>
+            <button class="btn btn-danger" data-action="delete" data-index="${i}">Excluir</button>
+          </td>
+        `;
+        tr.innerHTML = tdNome + tdCNPJ + tdArea + tdTipo + tdValor + tdContato + tdEndereco + tdAcoes;
+        inputs.tbody.appendChild(tr);
+      });
+    }
+
+    // Submeter formulário
+    form.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const data = {
+        nome: inputs.nome.value,
+        cnpj: inputs.cnpj.value,
+        area: inputs.area.value,
+        tipo: inputs.tipo.value,
+        valor: inputs.valor.value ? Number(inputs.valor.value) : null,
+        contato: inputs.contato.value,
+        endereco: inputs.endereco.value
+      };
+
+      const err = validateForm(data);
+      if (err) {
+        inputs.statusMsg.textContent = err;
+        return;
+      }
+
+      const list = getData();
+      const isEditing = inputs.editingIndex.value !== '';
+      if (isEditing) {
+        const idx = Number(inputs.editingIndex.value);
+        list[idx] = data;
+        setData(list);
+        inputs.statusMsg.textContent = "Empresa atualizada com sucesso.";
+      } else {
+        list.push(data);
+        setData(list);
+        inputs.statusMsg.textContent = "Empresa cadastrada com sucesso.";
+      }
+
+      renderTable(inputs.busca.value);
+      form.reset();
+      inputs.editingIndex.value = '';
+      setTimeout(() => inputs.statusMsg.textContent = '', 2000);
+    });
+
+    // Limpar formulário
+    inputs.btnReset.addEventListener('click', () => {
+      form.reset();
+      inputs.editingIndex.value = '';
+      inputs.statusMsg.textContent = "Formulário limpo.";
+      setTimeout(() => inputs.statusMsg.textContent = '', 1500);
+    });
+
+    // Delegação para ações da tabela (editar/excluir)
+    inputs.tbody.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button');
+      if (!btn) return;
+      const action = btn.getAttribute('data-action');
+      const index = Number(btn.getAttribute('data-index'));
+      const list = getData();
+
+      if (action === 'edit') {
+        const e = list[index];
+        inputs.nome.value = e.nome || '';
+        inputs.cnpj.value = e.cnpj || '';
+        inputs.area.value = e.area || '';
+        inputs.tipo.value = e.tipo || '';
+        inputs.valor.value = e.valor || '';
+        inputs.contato.value = e.contato || '';
+        inputs.endereco.value = e.endereco || '';
+        inputs.editingIndex.value = index;
+        inputs.statusMsg.textContent = "Editando empresa selecionada. Faça alterações e clique em Salvar.";
+      }
+
+      if (action === 'delete') {
+        if (confirm('Deseja realmente excluir esta empresa?')) {
+          list.splice(index, 1);
+          setData(list);
+          renderTable(inputs.busca.value);
+          inputs.statusMsg.textContent = "Empresa excluída.";
+          setTimeout(() => inputs.statusMsg.textContent = '', 1500);
+        }
+      }
+    });
+
+    // Busca
+    inputs.busca.addEventListener('input', (ev) => {
+      renderTable(ev.target.value);
+    });
+
+    // Exportar JSON
+    inputs.btnExport.addEventListener('click', () => {
+      const dataStr = JSON.stringify(getData(), null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'empresas.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Importar JSON
+    inputs.btnImport.addEventListener('click', () => inputs.fileImport.click());
+    inputs.fileImport.addEventListener('change', async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (!Array.isArray(json)) throw new Error('Arquivo inválido: esperado um array JSON');
+        // validações leves
+        const cleaned = json.map(e => ({
+          nome: String(e.nome || ''),
+          cnpj: String(e.cnpj || ''),
+          area: String(e.area || ''),
+          tipo: String(e.tipo || ''),
+          valor: e.valor != null ? Number(e.valor) : null,
+          contato: String(e.contato || ''),
+          endereco: String(e.endereco || '')
+        }));
+        setData(cleaned);
+        renderTable(inputs.busca.value);
+        inputs.statusMsg.textContent = "Importação concluída.";
+        setTimeout(() => inputs.statusMsg.textContent = '', 2000);
+      } catch (err) {
+        inputs.statusMsg.textContent = "Falha ao importar: " + err.message;
+      } finally {
+        ev.target.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
